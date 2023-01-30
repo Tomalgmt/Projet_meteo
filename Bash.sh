@@ -62,25 +62,25 @@ OPTIND=1;
 #}---------------------------------[VARIABLES]-------------------------------------------------------{
 
 #Location
-Fp_bool=0
-Gp_bool=0
-Sp_bool=0
-Ap_bool=0
-Op_bool=0
-Qp_bool=0
+Ft_bool=0
+Gt_bool=0
+St_bool=0
+At_bool=0
+Ot_bool=0
+Qt_bool=0
 
 #Graph Parameters
-tp_bool=0
-hp_bool=0
-pp_bool=0
-wp_bool=0
-mp_bool=0
-dp_bool=0
+tt_bool=0
+ht_bool=0
+pt_bool=0
+wt_bool=0
+mt_bool=0
+dt_bool=0
 
 #Sort Parameters
-Cp_bool=0
-Vp_bool=0
-Bp_bool=0
+Ct_bool=0
+Vt_bool=0
+Bt_bool=0
 
 #Functional variable
 date_part1=""
@@ -91,16 +91,16 @@ currdatemax_3=0
 currdatemin_1=0
 currdatemin_2=0
 currdatemin_3=0
-day_min=5
+day_min=0
 day_max=31
-month_min=2
+month_min=0
 month_max=12
-year_min=5
-year_max=2000
+year_min=0
+year_max=2100
 
 
 #}------------------------------------------[SCRIPT]-------------------------------------------------{
-while getopts "thpwmd:CVBy" date; do
+while getopts "t:hp:wmd:CVBy" date; do
     case "${date}" in
         y)
 		show_help
@@ -108,70 +108,84 @@ while getopts "thpwmd:CVBy" date; do
 		;;
         t) 
 		echo "-t"
-		tp_bool=1
+		if [ ${OPTARG} -eq 1 -o ${OPTARG} -eq 2 -o ${OPTARG} -eq 3 ]
+		then
+			tt_bool=${OPTARG}
+		else
+			echo "-t ARGUMENT ERROR"
+			exit 0
+		fi
+		echo "$tt_bool"
 		;;
 #Ajouter les differentes options des paramètres
         h) 
 		echo "-h"
-		hp_bool=1
+		ht_bool=1
 		;;
         p) 
 		echo "-p"
-		pp_bool=1
+		if [ ${OPTARG} -eq 1 -o ${OPTARG} -eq 2 -o ${OPTARG} -eq 3 ]
+		then
+			pt_bool=${OPTARG}
+		else
+			echo "-p ARGUMENT ERROR"
+			exit 0
+		fi
+		echo "$pt_bool"
 		;;
         w) 
 		echo "-w"
-		wp_bool=1
+		wt_bool=1
 		;;
         m) 
 		echo "-m"
-		tp_bool=1
+		mt_bool=1
 		;;
         C) 
 		echo "--trichain"
-		tT_bool=1
+		Tt_bool=1
 		;;
         V) 
 		echo "--triavl"
-		tV_bool=1
+		Vt_bool=1
 		;;
         B) 
 		echo "--triabr"
-		tB_bool=1
+		Bt_bool=1
 		;;
 	d)
 		echo "-d"
 		choosen_date=${OPTARG}
 		echo "${choosen_date}"
-		td_bool=1
+		dt_bool=1
 		;;
         B) 
 		echo "--triabr"
-		tB_bool=1
+		Bt_bool=1
 		;;
         F) 
 		echo "-France"
-		tF_bool=1
+		Ft_bool=1
 		;;
         G) 
 		echo "-Guyane"
-		tG_bool=1
+		Gt_bool=1
 		;;
         S) 
 		echo "-Stp&mql"
-		tS_bool=1
+		St_bool=1
 		;;
         A) 
 		echo "-Antilles"
-		tA_bool=1
+		At_bool=1
 		;;
         O) 
 		echo "-OceanIndien"
-		tO_bool=1
+		Ot_bool=1
 		;;
         Q) 
 		echo "-Antartique"
-		tQ_bool=1
+		Qt_bool=1
 		;;
 	*)
 		exit 0
@@ -190,12 +204,10 @@ fi
 echo "test"
 
 
-if [ td_bool ]
+if [ ${td_bool} ]
 then
 	date_part1=$(echo $choosen_date | cut -d_ -f1)
-# echo "${date_part1}" FONCTIONNE
 	date_part2=$(echo $choosen_date | cut -d_ -f2) 
-# echo "${date_part2}" FONCTIONNE
 	if [ $(echo $date_part1 | cut -d'-' -f1) -lt $day_min ]
 	then
 		echo "DATE ERROR MIN DAY"
@@ -274,21 +286,61 @@ fi
 #COMMENCER L'EXECUTION DU SCRIPT QUI FAIT LES CUT EN FOCNTION DES PARAMETRES DANS UN NOUVEAU CSV
 
 
-echo "${currdatemin_1}"
-echo "${currdatemin_2}"
-echo "${currdatemin_3}"
-echo "${currdatemax_1}"
-echo "${currdatemax_2}"
-echo "${currdatemax_3}"
+#DATE FONCTIONNE
 
 
-
-if [ ${hp_bool} -eq 1 ]
+if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
 then
-	touch altitude.txt << [ sed 1d meteo_filtered_data.csv | cut -d';' -f14 ]
+	touch stationid.txt
+	touch temp.txt #11
+	cut -d';' -f1 meteo_filtered_data.csv | sed 1d | >>stationid.txt
+	cut -d';' -f11,12,23 meteo_filtered_data.csv | sed 1d | >>temp.txt
+	rm stationid.txt
+	rm temp.txt
+fi
+if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
+then
+	touch coord.txt
+	touch temp.txt #11
+	cut -d';' -f1 meteo_filtered_data.csv | sed 1d | >>coord.txt
+	cut -d';' -f11,12,23 meteo_filtered_data.csv | sed 1d | >>temp.txt
+	rm stationid.txt
+	rm temp.txt
+fi
+if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
+then
+	echo "coucou"
 fi
 
-
+if [ ${pt_bool} -eq 1 ]
+then
+	echo "coucou2"
+fi
+if [ ${pt_bool} -eq 2 ]
+then
+	echo "coucou2"
+fi
+if [ ${pt_bool} -eq 3 ]
+then
+	echo "coucou2"
+fi
+if [ ${ht_bool} -eq 1 ]
+then
+	touch altitude.txt 
+	cut -d';' -f14 meteo_filtered_data.csv | sed 1d | >>altitude.txt
+fi
+if [ ${wt_bool} -eq 1 ]
+then
+	touch winddir.txt 
+	touch windsp.txt 
+	cut -d';' -f4 meteo_filtered_data.csv | sed 1d | >>winddir.txt
+	cut -d';' -f5 meteo_filtered_data.csv | sed 1d | >>windsp.txt
+fi
+if [ ${mt_bool} -eq 1 ]
+then
+	touch humidity.txt 
+	cut -d';' -f6 meteo_filtered_data.csv | sed 1d | >>humidity.txt
+fi
 
 
 
