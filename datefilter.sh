@@ -110,3 +110,30 @@ awk -F';' -v currdate_min1="$currdatemin_1" -v currdate_min2="$currdatemin_2" -v
       }
   }
 }' meteo_filtered_data_v1.csv > date_filtered.csv
+
+V6
+	awk -F';' -v currdate_min1="$currdatemin_1" -v currdate_min2="$currdatemin_2" -v currdate_min3="$currdatemin_3" -v currdate_max1="$currdatemax_1" -v currdate_max2="$currdatemax_2" -v currdate_max3="$currdatemax_3"'BEGIN {
+		a=substr($2,1,index($2,"-")-1);
+		b=substr($2,2,index($2,"-")-1);
+		c=substr($2,3,index($2,"-")-1);
+		if (a > currdate_min1 && a < currdate_max1) {
+      			print $0;
+ 		 }
+ 		 else {
+      			if (a == currdate_min1 || a == currdate_max1) {
+      			    if (b > currdate_min2 && b < currdate_max2) {
+      			        print $0;
+     			     }
+      			}
+     			else {
+     			     if (b == currdate_min2 || b == currdate_max2) {
+           			   if (c >= currdate_min3 && c <= currdate_max3) {
+               				   print $0;
+      					}
+           			   if(c==currdate_min3 && c<currdate_max3){
+           			       print $0;
+          			    }
+         			}
+      			}
+  		}
+	}' meteo_filtered_data_v1.csv > date_filtered.csv
