@@ -1,21 +1,14 @@
-date_part1="2011-5-12"
-date_part2="2013-5-6"
-
-awk -F';' -v date1="$date_part1" -v date2="$date_part2" '
-  BEGIN{
-    split(date1, d1, "-");
-    split(date2, d2, "-");
-    t1=mktime(d1[1] " " d1[2] " " d1[3] " 00 00 00");
-    t2=mktime(d2[1] " " d2[2] " " d2[3] " 23 59 59");
-  }
-  {
-    split($2, d, "-");
-    split(d[3], t, "T");
-    split(t[2], h, "+");
-    split(h[1], m, ":");
-    t3=mktime(d[1] " " d[2] " " t[1] " " m[1] " " m[2] " " m[3]);
-    if(t3>=t1 && t3<=t2) {
-      print $0;
-    }
-  }
-' input.csv > output.csv
+awk -F';' -v currdate_min1="$currdatemin_1" -v currdate_min2="$currdatemin_2" -v currdate_min3="$currdatemin_3" -v currdate_max1="$currdatemax_1" -v currdate_max2="$currdatemax_2" -v currdate_max3="$currdatemax_3" '
+	  BEGIN{
+	    split($2, d, "-");
+	    print "test"
+	    split(d[3], t, "T");
+	    split(t[2], h, ":");
+	    if(d[1]>=currdate_min1 && d[1]<=currdate_max1) {
+	    	if(d[2]>=currddate_min2 && d[2]<=currdate_max2) {
+	    		if(t[1]>=currdate_min3 && t[1]<currdate_max3) {
+	    			print $0;
+	    		}
+	    	}
+	    }
+	  }' meteo_filtered_data_v1.csv > date_filtered.csv
