@@ -180,6 +180,10 @@ V8
 V9
 	cat meteo_filtered_data_v1.csv | awk -F";" -v date_part1="$date_part1" -v date_part2="$date_part2" ' split($2,d,T); d[1] >= date_part1 && d[1] <= date_part2 { print $0 >> date_filtered.csv } '
 
+V10
+
+cat meteo_filtered_data_v1.csv | awk -F";" -v date_part1="$date_part1" -v date_part2="$date_part2" '{ split($2,d,T); if (d[1] >= date_part1 && d[1] <= date_part2) { print $0 >> "date_filtered.csv" } }'
+
 ERROR MESSAGE
 
 awk: cmd. line:1:  split($2,d,T); d[1] >= currdate_min && d[1] < currdate_max { print $0 >> date_filtered.csv } 
