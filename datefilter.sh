@@ -137,3 +137,33 @@ V6
       			}
   		}
 	}' meteo_filtered_data_v1.csv > date_filtered.csv
+
+V7
+
+	awk -F';' -v currdate_min1="$currdatemin_1" -v currdate_min2="$currdatemin_2" -v currdate_min3="$currdatemin_3" -v currdate_max1="$currdatemax_1" -v currdate_max2="$currdatemax_2" -v currdate_max3="$currdatemax_3"'
+	BEGIN {
+		split($2,d,";");
+		split(d[2],t,"T");
+		split(t[1],p,"-");
+		print t[1];
+		if (a > currdate_min1 && a < currdate_max1) {
+      			print $0;
+ 		 }
+ 		 else {
+      			if (a == currdate_min1 || a == currdate_max1) {
+      			    if (b > currdate_min2 && b < currdate_max2) {
+      			        print $0;
+     			     }
+      			}
+     			else {
+     			     if (b == currdate_min2 || b == currdate_max2) {
+           			   if (c >= currdate_min3 && c <= currdate_max3) {
+               				   print $0;
+      					}
+           			   if(c==currdate_min3 && c<currdate_max3){
+           			       print $0;
+          			    }
+         			}
+      			}
+  		}
+	}' meteo_filtered_data_v1.csv >>date_filtered.csv
