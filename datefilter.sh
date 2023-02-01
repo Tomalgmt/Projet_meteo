@@ -176,3 +176,12 @@ fi
 V8
 
 	cat meteo_filtered_data_v1.csv | awk -F";" -v currdate_min="$date_part1" -v currdate_max="$date_part2" ' split($2,d,T); d[1] >= currdate_min && d[1] < currdate_max { print $0 >> date_filtered.csv } '
+
+
+ERROR MESSAGE
+
+awk: cmd. line:1:  split($2,d,T); d[1] >= currdate_min && d[1] < currdate_max { print $0 >> date_filtered.csv } 
+awk: cmd. line:1:                                                                                        ^ syntax error
+
+
+
