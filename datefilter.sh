@@ -139,7 +139,11 @@ V6
 	}' meteo_filtered_data_v1.csv > date_filtered.csv
 
 V7
-
+if [ ${dt_bool} -eq 1 ]
+then
+	echo "$currdatemin_1"
+	echo "$currdatemin_2"
+	echo "$currdatemax_1"
 	awk -F';' -v currdate_min1="$currdatemin_1" -v currdate_min2="$currdatemin_2" -v currdate_min3="$currdatemin_3" -v currdate_max1="$currdatemax_1" -v currdate_max2="$currdatemax_2" -v currdate_max3="$currdatemax_3"'
 	BEGIN {
 		split($2,d,";");
@@ -167,3 +171,4 @@ V7
       			}
   		}
 	}' meteo_filtered_data_v1.csv >>date_filtered.csv
+fi
