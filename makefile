@@ -1,15 +1,15 @@
 
-tri: main.c avltest2.o tritab.o triabr.o
-	gcc main.c -o tri
+sort: main.c avl_sort.o chain_sort.o abr_sort.o
+	gcc main.c -o sort
 
-avltest2.o: header.h avltest2.c
-	gcc -c avltest2.c
+avl_sort.o: header.h avl_sort.c
+	gcc -c avl_sort.c
 
-triabr.o: triabr.c header.h
-	gcc -c triabr.c
+abr_sort.o: abr_sort.c header.h
+	gcc -c abr_sort.c
 
-tritab.o: tritab.c header.h
-	gcc -c tritab.c
+chain_sort.o: chain_sort.c header.h
+	gcc -c chain_sort.c
 
 clean:
-	rm *.o tri
+	rm *.o sort
