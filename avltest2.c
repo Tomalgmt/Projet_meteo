@@ -19,7 +19,7 @@ AVL* createAVL(char e[255]){
 	return a;
 }
 
-AVL* rotation_gauche(AVL* a){
+AVL* rotate_left(AVL* a){
 	AVL* pivot = a->right;
 	int eq_a = a->balance;
 	int eq_p = pivot->balance;
@@ -31,7 +31,7 @@ AVL* rotation_gauche(AVL* a){
 	return a;
 }
 
-AVL* rotation_droite(AVL* a){
+AVL* rotate_right(AVL* a){
 	AVL* pivot=a->left;
 	int eq_a = a->balance;
 	int eq_p = pivot->balance;
@@ -43,31 +43,31 @@ AVL* rotation_droite(AVL* a){
 	return a;
 }
 
-AVL* doublerotdroite(AVL* a){
-	a->left = rotation_gauche(a->left);
-	return rotation_droite(a);
+AVL* double_rotate_right(AVL* a){
+	a->left = rotate_left(a->left);
+	return rotate_right(a);
 }
 
-AVL* doublerotgauche(AVL* a){
-	a->right = rotation_droite(a->right);
-	return rotation_gauche(a);
+AVL* double_rotate_left(AVL* a){
+	a->right = rotate_right(a->right);
+	return rotate_left(a);
 }
 
-AVL* equilibreAVL(AVL *a){
+AVL* balanceAVL(AVL *a){
 	if (a->balance == 2){
 		if (a->right->balance >= 0){
-			return rotation_gauche(a);
+			return rotate_left(a);
 		}
 		else {
-			return doublerotgauche(a);
+			return double_rotate_left(a);
 		}
 	}
 	else if (a->balance == -2){
 		if (a->left->balance <= 0){
-			return rotation_droite(a);
+			return rotate_right(a);
 		}
 		else {
-			return doublerotdroite(a);
+			return double_rotate_right(a);
 		}
 	}
 	return a;
@@ -92,7 +92,7 @@ AVL* insertAVL(AVL* a, char e[255], int* h){
 	}
 	if (*h != 0){
 		a->balance = a->balance + *h;
-		a=equilibreAVL(a);
+		a = balanceAVL (a);
 		if (a->balance == 0){
 			*h = 0;
 		}
@@ -126,6 +126,3 @@ void printAVL_reverse(AVL* a, FILE *file){
 		
 	}
 }
-
-
-
