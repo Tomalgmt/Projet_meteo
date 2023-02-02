@@ -1,13 +1,40 @@
-awk -F ';' '{
-  temperature_sum[$1] += $2
-  temperature_min_sum[$1] += $3
-  temperature_max_sum[$1] += $4
-  temperature_count[$1]++
-} END {
-  for (station_id in temperature_sum) {
-    temperature_avg = temperature_sum[station_id] / temperature_count[station_id]
-    temperature_min_avg = temperature_min_sum[station_id] / temperature_count[station_id]
-    temperature_max_avg = temperature_max_sum[station_id] / temperature_count[station_id]
-    printf "%s;%.2f;%.2f;%.2f\n", station_id, temperature_avg, temperature_min_avg, temperature_max_avg
-  }
-}' $1
+declare -A temperature_sum
+declare -A temperature_min_sum
+declare -A temperature_max_sum
+declare -A count
+
+# Read each line of the input file
+while read line; do
+  # Extract the values for station ID, temperature, temperature minimum, and temperature maximum
+  stationID=$(echo $line | awk -F "," '{print $1}')
+  temperature=$(echo $line | awk -F "," '{print $11}')
+  temperature_min=$(echo $line | awk -F "," '{print $12}')
+  temperature_max=$(echo $line | awk -F "," '{print $13}')
+
+  # Increment the count of occurrences of this station ID
+  count[$stationID]=$((count[$stationID]+1))
+
+  # Add the temperature, temperature minimum, and temperature maximum to the sum for this station ID
+  temperature_sum[$stationID]=$((temperature_sum[$stationID]+temperature))
+  temperature_min_sum[$stationID]=$((temperature_min_sum[$stationID]+temperature_min))
+  temperature_max_sum[$stationID]=$((temperature_max_sum[$stationID]+temperature_max))
+done < region_filtered.csv
+
+# Open the output file for writing
+exec 3>temp_filtered.csv
+
+# Write the header line to the output file
+echo "stationID;temperature;temperature_min;temperature_max" >&3
+
+# Calculate the average temperature, temperature minimum, and temperature maximum for each unique station ID
+for stationID in "${!count[@]}"; do
+  temperature_avg=$((temperature_sum[$stationID]/count[$stationID]))
+  temperature_min_avg=$((temperature_min_sum[$stationID]/count[$stationID]))
+  temperature_max_avg=$((temperature_max_sum[$stationID]/count[$stationID]))
+
+  # Write the results to the output file
+  echo "$stationID;$temperature_avg;$temperature_min_avg;$temperature_max_avg" >&3
+done
+
+# Close the output file
+exec 3>&-
