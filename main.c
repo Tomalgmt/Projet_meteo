@@ -53,44 +53,45 @@ int main(int argc, char* argv[]){
 				file=fopen(argv[2],"w");
 				if (file == NULL) {
 					printf("error opening file");
-				return 1;
+					return 1;
 				}
 				printChain(rootChain,file);
 				fclose(file);
 			}
 				
 			else if (!strcmp(argv[3], "--abr")){
-					ABR* rootABR = NULL;
-					while(fgets(line, 255, file)){
-						rootABR = insertABR(rootABR, line);
-					}
-					fclose(file);
+				ABR* rootABR = NULL;
+				while(fgets(line, 255, file)){
+					rootABR = insertABR(rootABR, line);
+				}
+				fclose(file);
 
-					file=fopen(argv[2],"w");
-					if (file == NULL) {
-						printf("error opening file");
+				file=fopen(argv[2],"w");
+				if (file == NULL) {
+					printf("error opening file");
 					return 1;
-					}
-					printABR(rootABR,file);
-					fclose(file);
+				}
+				printABR(rootABR,file);
+				fclose(file);
 			}
 				
 			else if (!strcmp(argv[3], "--avl")){
-					AVL* rootAVL = NULL;
-					while(fgets(line, 255, file)){
-						rootAVL = insertAVL(rootAVL, line, &h);
+				AVL* rootAVL = NULL;
+				while(fgets(line, 255, file)){
+					rootAVL = insertAVL(rootAVL, line, &h);
 
-					}
-					fclose(file);
+				}
+				fclose(file);
 
-					file=fopen(argv[2],"w");
-					if (file == NULL) {
-						printf("error opening file");
-					return 2;
-					}
-					printAVL(rootAVL,file);
-					fclose(file);
+				file=fopen(argv[2],"w");
+				if (file == NULL) {
+					printf("error opening file");
+				return 2;
+				}
+				printAVL(rootAVL,file);
+				fclose(file);
 			}
+				
 			else if (!strcmp(argv[3], "-r")){
 				AVL* rootAVL = NULL;
 				while(fgets(line, 255, file)){
@@ -129,36 +130,36 @@ int main(int argc, char* argv[]){
 			}
 				
 			else if (!strcmp(argv[3], "--abr") || !strcmp(argv[4], "--abr")){
-					ABR* rootABR = NULL;
-					while(fgets(line, 255, file)){
-						rootABR = insertABR(rootABR, line);
-					}
-					fclose(file);
+				ABR* rootABR = NULL;
+				while(fgets(line, 255, file)){
+					rootABR = insertABR(rootABR, line);
+				}
+				fclose(file);
 
-					file=fopen(argv[2],"w");
-					if (file == NULL) {
-						printf("error opening file");
-					return 1;
-					}
-					printABR_reverse(rootABR,file);
-					fclose(file);
+				file=fopen(argv[2],"w");
+				if (file == NULL) {
+					printf("error opening file");
+				return 1;
+				}
+				printABR_reverse(rootABR,file);
+				fclose(file);
 			}
 				
 			else if (!strcmp(argv[3], "--avl") || !strcmp(argv[4], "--avl")){
-					AVL* rootAVL = NULL;
-					while(fgets(line, 255, file)){
-						rootAVL = insertAVL(rootAVL, line, &h);
+				AVL* rootAVL = NULL;
+				while(fgets(line, 255, file)){
+					rootAVL = insertAVL(rootAVL, line, &h);
 
-					}
-					fclose(file);
+				}
+				fclose(file);
 
-					file=fopen(argv[2],"w");
-					if (file == NULL) {
-						printf("error opening file");
-					return 2;
-					}
-					printAVL_reverse(rootAVL,file);
-					fclose(file);
+				file=fopen(argv[2],"w");
+				if (file == NULL) {
+					printf("error opening file");
+				return 2;
+				}
+				printAVL_reverse(rootAVL,file);
+				fclose(file);
 			}
 		break;
 	}
