@@ -38,3 +38,20 @@ done
 
 # Close the output file
 exec 3>&-
+
+
+V2
+
+# Calculate average temperature, temperature minimum, and temperature maximum
+# for each station ID and write the result to the output file
+awk -F "," '{
+  temperatures[$1]+=$11;
+  temperature_mins[$1]+=$12;
+  temperature_maxs[$1]+=$13;
+  counts[$1]++;
+}
+END {
+  for (station in temperatures) {
+    printf("%s,%.2f,%.2f,%.2f\n", station, temperatures[station]/counts[station], temperature_mins[station]/counts[station], temperature_maxs[station]/counts[station]) >> output;
+  }
+}' "$file"
