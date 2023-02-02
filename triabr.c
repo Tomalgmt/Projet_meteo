@@ -3,8 +3,8 @@
 typedef struct ABR{
 	char val[255];
 	int count;
-	struct ABR* fg;
-	struct ABR* fd;
+	struct ABR* left;
+	struct ABR* right;
 }ABR;
 
 ABR* createABR(char e[255]){
@@ -12,8 +12,8 @@ ABR* createABR(char e[255]){
 	a =(ABR*)malloc(sizeof(ABR));
 	strcpy(a->val, e);
 	a->count=1;
-	a->fg=NULL;
-	a->fd=NULL;
+	a->left = NULL;
+	a->right = NULL;
 	return a;
 }
 
@@ -21,26 +21,26 @@ ABR* insertABR (ABR* a, char e[255]){
 	if (a==NULL){
 		return createABR(e);
 	}
-	if (strcmp(e,a->val)<0){
-		a->fg = insertABR(a->fg,e);
+	if (strcmp(e, a->val) < 0){
+		a->left = insertABR (a->left, e);
 	}
-	else if (strcmp(e,a->val)>0){
-		a->fd = insertABR(a->fd,e);
+	else if (strcmp(e, a->val) > 0){
+		a->right = insertABR (a->right, e);
 	}
 	else {
-		a->count=a->count+1;
+		a->count = a->count+1;
 		return a;
 	}
 	return a;
 }
 
-void printABR(ABR* a, FILE *file){
+void printABR (ABR* a, FILE *file){
 	if (a != NULL){
-		printABR(a->fg, file);
-		for (int i=0;i<a->count;i++){
+		printABR (a->left, file);
+		for (int i=0; i < a->count; i++){
 			fprintf(file, "%s", a->val);
 		}
-		printABR(a->fd, file);
+		printABR (a->right, file);
 		free(a);
 		
 	}
@@ -48,11 +48,11 @@ void printABR(ABR* a, FILE *file){
 
 void printABR_reverse(ABR* a, FILE *file){
 	if (a != NULL){
-		printABR_reverse(a->fd, file);
-		for (int i=0;i<a->count;i++){
-			fprintf(file, "%s", a->val);
+		printABR_reverse (a->right, file);
+		for (int i=0; i<a->count; i++){
+			fprintf (file, "%s", a->val);
 		}
-		printABR_reverse(a->fg, file);
+		printABR_reverse (a->left, file);
 		free(a);
 		
 	}
