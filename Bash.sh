@@ -6,9 +6,7 @@ show_help() {
 cat << EOF
 Usage:
 Script --help,-h,-t,-a,-p,-m,-v,-w,--trichaine,--triavl,--triabr,-d [Day-Month-Year]_[Day-Month-Year]
-
 List of the arguments : 
-
 	--help					Display this menu
 	-t[1-3]					Display a graph of the temperature in the choosen date and the choosen location (
 	-h					Display a graph of the altitude in the choosen date and the choosen location
@@ -18,17 +16,12 @@ List of the arguments :
 	--trichain				Sort the data file with a chain sort
 	--triavl				Sort the data file with an avl sort
 	--triabr 				sort the data file with an abr sort
-	-d [Day-Month-Year]_[Day-Month-Year]	Choose a date between [date1] and [date2] to display the graphs
-
-
+	-d [Year-Month-Day]_[Year-Month-Day]	Choose a date between [date1] and [date2] to display the graphs
 #a continuer avec les stations
-
 Error that may occur:
-
 Attention to write correctly the date.
 The date have to be in a range of 1 Day beetween [Date1] and [Date2]
 The date parameter is in this format (example) : -d 31-06-2003_01-07-2003
-
 EOF
 }
 
@@ -204,11 +197,11 @@ fi
 echo "test"
 
 
-if [ ${td_bool} ]
+if [ ${dt_bool} ]
 then
-	date_part1=$(echo $choosen_date | cut -d_ -f1)
-	date_part2=$(echo $choosen_date | cut -d_ -f2) 
-	if [ $(echo $date_part1 | cut -d'-' -f1) -lt $day_min ]
+	date_part1=$(echo $choosen_date | cut -d'_' -f1)
+	date_part2=$(echo $choosen_date | cut -d'_' -f2)
+	if [ $(echo $date_part1 | cut -d'-' -f1) -lt $year_min ]
 	then
 		echo "DATE ERROR MIN DAY"
 		echo $(echo $date_part1 | cut -d'-' -f1)
@@ -223,13 +216,13 @@ then
 	else
 		currdatemin_2=$(echo $date_part1 | cut -d'-' -f2)
 	fi
-	if [ $(echo $date_part1 | cut -d'-' -f3) -lt $year_min ]
+	if [ $(echo $date_part1 | cut -d'-' -f3) -lt $day_min ]
 	then
 		echo "DATE ERROR MIN YEAR"
 	else
 		currdatemin_3=$(echo $date_part1 | cut -d'-' -f3)
 	fi
-	if [ $(echo $date_part2 | cut -d'-' -f1) -gt $day_max ]
+	if [ $(echo $date_part2 | cut -d'-' -f1) -gt $year_max ]
 	then
 		echo "DATE ERROR MAX DAY"
 	else 
@@ -241,18 +234,18 @@ then
 	else
 		currdatemax_2=$(echo $date_part2 | cut -d'-' -f2)
 	fi
-	if [ $(echo $date_part2 | cut -d'-' -f3) -gt $year_max ]
+	if [ $(echo $date_part2 | cut -d'-' -f3) -gt $day_max ]
 	then
 		echo "DATE ERROR MAX YEAR"
 	else
 		currdatemax_3=$(echo $date_part2 | cut -d'-' -f3)
 	fi
-	if [ ${currdatemax_3} -lt ${currdatemin_3} ]
+	if [ ${currdatemax_1} -lt ${currdatemin_1} ]
 	then	
 		echo "ERROR DATE FORMAT"
 		exit 0
 	else	
-		if [ ${currdatemax_3} -eq ${currdatemin_3} ]
+		if [ ${currdatemax_1} -eq ${currdatemin_1} ]
 		then
 			if [ ${currdatemax_2} -lt ${currdatemin_2} ]
 			then
@@ -261,12 +254,12 @@ then
 			else
 				if [ ${currdatemax_2} -eq ${currdatemin_2} ]
 				then
-					if [ ${currdatemax_1} -lt ${currdatemin_1} ]
+					if [ ${currdatemax_3} -lt ${currdatemin_3} ]
 					then
 						echo "ERROR DATE FORMAT"
 						exit 0
 					fi
-					if [ ${currdatemax_1} -eq ${currdatemin_1} ]
+					if [ ${currdatemax_3} -eq ${currdatemin_3} ]
 					then
 						echo "ERROR EQUALE DATE"
 						exit 0
@@ -288,22 +281,165 @@ fi
 
 #DATE FONCTIONNE
 
+if [ ${dt_bool} -eq 1 ]
+then
+	echo $currdatemin_1
+	echo $currdatemin_2
+	echo $currdatemin_3
+	echo $currdatemax_1
+	echo $currdatemax_2
+	echo $currdatemax_3
+	cat meteo_filtered_data_v1.csv | awk -F'[;T-]' -v currdatemin_1="$currdatemin_1" -v currdatemin_2="$currdatemin_2" -v currdatemin_3="$currdatemin_3" -v currdatemax_1="$currdatemax_1" -v currdatemax_2="$currdatemax_2" -v currdatemax_3="$currdatemax_3" '{
+	if( $2 > currdatemin_1 && $2 < currdatemax_1 ){
+		print $0
+	} 
+	else{
+		if( $2>=currdatemin_1 || $2<=currdatemax_1 ){
+			if( $3>currdatemin_2 && $3<currdatemax_2 ){
+				print $0
+			}
+			else{
+				if( $3>=currdatemin_2 || $3<=currdatemax_2 ){
+					if( $4>currdatemin_3 && $3<currdatemax_3 ){
+						print $0
+					}
+					else{
+						if( $4==currdatemin_3 || $4==curratemax_3 ){
+							print $0
+						}
+					}
+				}
+			}
+		}
+	}
+	}' >date_filtered.csv
+
+fi
+: <<"comment"
+if [ ${dt_bool} -eq 0 ]
+then
+#FGSAOQ
+#= France,Guyane,Stpier,Antille,Ocean Indien,Antartique
+	if [ ${Ft_bool} -eq 1 ]
+	then	
+		if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
+		then
+			cut -d';' -f1 meteo_filtered_data_v1.csv | sed 1d >stationid.txt	
+			cut -d';' -f11,12,13 meteo_filtered_data_v1.csv | sed 1d >temp.txt	
+			rm temp.txt
+			rm stationid.txt
+		fi
+		if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
+		then
+			cut -d';' -f1 meteo_filtered_data_v1.csv | sed 1d >coord.txt
+			cut -d';' -f11,12,13 meteo_filtered_data_v1.csv | sed 1d >temp.txt
+			rm stationid.txt
+			rm temp.txt
+		fi
+		if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
+		then
+			echo "coucou"	
+		fi
+		
+		if [ ${pt_bool} -eq 1 ]
+		then
+			echo "coucou2"
+		fi
+		if [ ${pt_bool} -eq 2 ]
+		then
+			echo "coucou2"
+		f	i
+		if [ ${pt_bool} -eq 3 ]
+		then
+			echo "coucou2"
+		fi
+		if [ ${ht_bool} -eq 1 ]
+		then
+			touch altitude.txt 
+			cut -d';' -f14 meteo_filtered_data_v1.csv | sed 1d | >>altitude.txt
+		fi
+		if [ ${wt_bool} -eq 1 ]
+		then
+			touch winddir.txt 
+			touch windsp.txt 
+			cut -d';' -f4 meteo_filtered_data.csv | sed 1d | >>winddir.txt
+			cut -d';' -f5 meteo_filtered_data.csv | sed 1d | >>windsp.txt
+		fi
+		if [ ${mt_bool} -eq 1 ]
+		then
+			touch humidity.txt 
+			cut -d';' -f6 meteo_filtered_data.csv | sed 1d | >>humidity.txt
+		fi
+	
+fi
+	if [ ${Gt_bool} -eq 1 ]
+	then
+	
+	fi
+	if [ ${St_bool} -eq 1 ]
+	then	
+	fi
+	if [ ${At_bool} -eq 1 ]
+	then
+	
+	fi
+	if [ ${Ot_bool} -eq 1 ]
+	then
+	
+	fi
+	if [ ${Qt_bool} -eq 1 ]
+	then
+	
+	fi
+fi
+comment
+if [ ${dt_bool} -eq 0 ]
+then
+#FGSAOQ
+#= France,Guyane,Stpier,Antille,Ocean Indien,Antartique
+	if [ ${Ft_bool} -eq 1 ]
+	then	
+
+	fi
+	if [ ${Gt_bool} -eq 1 ]
+	then
+	
+	fi
+	if [ ${St_bool} -eq 1 ]
+	then
+	
+	fi
+	if [ ${At_bool} -eq 1 ]
+	then
+	
+	fi
+	if [ ${Ot_bool} -eq 1 ]
+	then
+	
+	fi
+	if [ ${Qt_bool} -eq 1 ]
+	then
+	
+	fi
+
+
+
+2014-0-0
+
+
+
 
 if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
 then
-	touch stationid.txt
-	touch temp.txt #11
-	cut -d';' -f1 meteo_filtered_data.csv | sed 1d | >>stationid.txt
-	cut -d';' -f11,12,23 meteo_filtered_data.csv | sed 1d | >>temp.txt
-	rm stationid.txt
+	cut -d';' -f1 meteo_filtered_data_v1.csv | sed 1d >stationid.txt
+	cut -d';' -f11,12,13 meteo_filtered_data_v1.csv | sed 1d >temp.txt
 	rm temp.txt
+	rm stationid.txt
 fi
 if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
 then
-	touch coord.txt
-	touch temp.txt #11
-	cut -d';' -f1 meteo_filtered_data.csv | sed 1d | >>coord.txt
-	cut -d';' -f11,12,23 meteo_filtered_data.csv | sed 1d | >>temp.txt
+	cut -d';' -f1 meteo_filtered_data_v1.csv | sed 1d >coord.txt
+	cut -d';' -f11,12,13 meteo_filtered_data_v1.csv | sed 1d >temp.txt
 	rm stationid.txt
 	rm temp.txt
 fi
@@ -319,7 +455,7 @@ fi
 if [ ${pt_bool} -eq 2 ]
 then
 	echo "coucou2"
-fi
+f	i
 if [ ${pt_bool} -eq 3 ]
 then
 	echo "coucou2"
@@ -327,7 +463,7 @@ fi
 if [ ${ht_bool} -eq 1 ]
 then
 	touch altitude.txt 
-	cut -d';' -f14 meteo_filtered_data.csv | sed 1d | >>altitude.txt
+	cut -d';' -f14 meteo_filtered_data_v1.csv | sed 1d | >>altitude.txt
 fi
 if [ ${wt_bool} -eq 1 ]
 then
@@ -341,8 +477,3 @@ then
 	touch humidity.txt 
 	cut -d';' -f6 meteo_filtered_data.csv | sed 1d | >>humidity.txt
 fi
-
-
-
-
-
