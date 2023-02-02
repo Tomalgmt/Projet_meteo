@@ -11,6 +11,13 @@ int main(int argc, char* argv[]){
 		return 1;
 	}
 
+	if (argc == 5){
+		if(!strcmp(arvg[3], argv[4])){
+			printf("Error same option put twice\n")
+			return 1;
+		}
+	}
+
 	FILE *file = fopen(argv[1],"r");
 	if (file == NULL) {
 		printf("error opening file");
