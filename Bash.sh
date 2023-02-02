@@ -271,6 +271,10 @@ then
 				
 fi
 
+
+#}---------------------------------------------[FUNCTIONAL]---------------------------------------------{
+
+
 #Finir les Verifications DE DATE et faire les nouvelles
 
 
@@ -283,55 +287,59 @@ fi
 
 if [ ${dt_bool} -eq 1 ]
 then
-	echo $currdatemin_1
-	echo $currdatemin_2
-	echo $currdatemin_3
-	echo $currdatemax_1
-	echo $currdatemax_2
-	echo $currdatemax_3
-	cat meteo_filtered_data_v1.csv | awk -F'[;T-]' -v currdatemin_1="$currdatemin_1" -v currdatemin_2="$currdatemin_2" -v currdatemin_3="$currdatemin_3" -v currdatemax_1="$currdatemax_1" -v currdatemax_2="$currdatemax_2" -v currdatemax_3="$currdatemax_3" '{
+	cat meteo_filtered_data_v1.csv | awk -F'[;T+:-]' -v currdatemin_1="$currdatemin_1" -v currdatemin_2="$currdatemin_2" -v currdatemin_3="$currdatemin_3" -v currdatemax_1="$currdatemax_1" -v currdatemax_2="$currdatemax_2" -v currdatemax_3="$currdatemax_3" '{
 	if( $2 > currdatemin_1 && $2 < currdatemax_1 ){
 		print $0
 	} 
 	else{
-		if( $2>=currdatemin_1 || $2<=currdatemax_1 ){
-			if( $3>currdatemin_2 && $3<currdatemax_2 ){
+		if( $2==currdatemin_1 ){
+			if( $3 > currdatemin_2 ){
 				print $0
 			}
 			else{
-				if( $3>=currdatemin_2 || $3<=currdatemax_2 ){
-					if( $4>currdatemin_3 && $3<currdatemax_3 ){
+				if( $3 >= currdatemin_2 ){
+					if( $4>=currdatemin_3 ){
 						print $0
 					}
-					else{
-						if( $4==currdatemin_3 || $4==curratemax_3 ){
+				}
+			}
+		}
+		else{
+			if( $2 == currdatemax_1 ){
+				if( $3 < currdatemax_2 ){
+					print $0
+				}
+				else{
+					if( $3 <= currdatemax_2 ){
+						if ( $4 <= currdatemax_3 ){
 							print $0
 						}
 					}
 				}
 			}
-		}
+		}				 
 	}
 	}' >date_filtered.csv
-
-fi
-: <<"comment"
-if [ ${dt_bool} -eq 0 ]
-then
-#FGSAOQ
-#= France,Guyane,Stpier,Antille,Ocean Indien,Antartique
+	
+	
+	
 	if [ ${Ft_bool} -eq 1 ]
 	then	
+		echo date_filtered.csv | awk -f'[;]' '{
+			if( $15 > 0 && $15 <= 95999 ){
+				print $0
+			}
+		}' > region_filtered.csv
+		#CUT LES date_filtered EN REGION AVEC CODE COMMUNE (tri)
 		if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
 		then
-			cut -d';' -f1 meteo_filtered_data_v1.csv | sed 1d >stationid.txt	
-			cut -d';' -f11,12,13 meteo_filtered_data_v1.csv | sed 1d >temp.txt	
+			cut -d';' -f1,11,12,13 region_filtered.csv | sed 1d >temp.txt	
 			rm temp.txt
 			rm stationid.txt
 		fi
 		if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
 		then
-			cut -d';' -f1 meteo_filtered_data_v1.csv | sed 1d >coord.txt
+			cut -d';' -f1 date_filtered.csv | sed 1d >coord.txt
 			cut -d';' -f11,12,13 meteo_filtered_data_v1.csv | sed 1d >temp.txt
 			rm stationid.txt
 			rm temp.txt
@@ -339,8 +347,7 @@ then
 		if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
 		then
 			echo "coucou"	
-		fi
-		
+		fi	
 		if [ ${pt_bool} -eq 1 ]
 		then
 			echo "coucou2"
@@ -369,30 +376,68 @@ then
 		then
 			touch humidity.txt 
 			cut -d';' -f6 meteo_filtered_data.csv | sed 1d | >>humidity.txt
-		fi
-	
+		fi	
 fi
 	if [ ${Gt_bool} -eq 1 ]
-	then
-	
+	then	
+		echo date_filtered.csv | awk -f'[;]' '{
+			if( $15 >= 97300 && $15 <= 97399 ){
+				print $0
+			}
+		}' > region_filtered.csv
 	fi
+	
+	
+	
 	if [ ${St_bool} -eq 1 ]
 	then	
+		echo date_filtered.csv | awk -f'[;]' '{
+			if( $15 >= 97500 && $15 <= 97599 ){
+				print $0
+			}
+		}' > region_filtered.csv
 	fi
+	
+	
+	
 	if [ ${At_bool} -eq 1 ]
 	then
-	
+		echo date_filtered.csv | awk -f'[;]' '{
+			if( $15 >= 97100 && $15 <= 97299 ){
+				print $0
+			}
+		}' > region_filtered.csv
 	fi
+	
+	
+	
 	if [ ${Ot_bool} -eq 1 ]
 	then
+		echo date_filtered.csv | awk -f'[;]' '{
+			if( $15 >= 97600 && $15 <= 97699 ){
+				print $0
+			}
+			if( $15 >= 97400 && $15 <= 97499 ){
+				print $0
+			}
+		}' > region_filtered.csv
 	
+	
+		
 	fi
 	if [ ${Qt_bool} -eq 1 ]
+		echo date_filtered.csv | awk -f'[;]' '{
+			if( $15 >= 98400 && $15 <= 98499 ){
+				print $0
+			}
+		}' > region_filtered.csv
 	then
-	
 	fi
 fi
-comment
+#reunion maillote
+fi
+
+
 if [ ${dt_bool} -eq 0 ]
 then
 #FGSAOQ
@@ -400,31 +445,97 @@ then
 	if [ ${Ft_bool} -eq 1 ]
 	then	
 
-	fi
+		if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
+		then
+			cut -d';' -f1 meteo_filtered_data_v1.csv | sed 1d >stationid.txt	
+			cut -d';' -f11,12,13 meteo_filtered_data_v1.csv | sed 1d >temp.txt	
+			rm temp.txt
+			rm stationid.txt
+		fi
+		if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
+		then
+			cut -d';' -f1 meteo_filtered_data_v1.csv | sed 1d >coord.txt
+			cut -d';' -f11,12,13 meteo_filtered_data_v1.csv | sed 1d >temp.txt
+			rm stationid.txt
+			rm temp.txt
+		fi
+		if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
+		then
+			echo "coucou"	
+		fi	
+		if [ ${pt_bool} -eq 1 ]
+		then
+			echo "coucou2"
+		fi
+		if [ ${pt_bool} -eq 2 ]
+		then
+			echo "coucou2"
+		f	i
+		if [ ${pt_bool} -eq 3 ]
+		then
+			echo "coucou2"
+		fi
+		if [ ${ht_bool} -eq 1 ]
+		then
+			touch altitude.txt 
+			cut -d';' -f14 meteo_filtered_data_v1.csv | sed 1d | >>altitude.txt
+		fi
+		if [ ${wt_bool} -eq 1 ]
+		then
+			touch winddir.txt 
+			touch windsp.txt 
+			cut -d';' -f4 meteo_filtered_data.csv | sed 1d | >>winddir.txt
+			cut -d';' -f5 meteo_filtered_data.csv | sed 1d | >>windsp.txt
+		fi
+		if [ ${mt_bool} -eq 1 ]
+		then
+			touch humidity.txt 
+			cut -d';' -f6 meteo_filtered_data.csv | sed 1d | >>humidity.txt
+		fi	
+fi
 	if [ ${Gt_bool} -eq 1 ]
-	then
-	
+	then	
 	fi
 	if [ ${St_bool} -eq 1 ]
-	then
-	
+	then	
 	fi
 	if [ ${At_bool} -eq 1 ]
 	then
-	
 	fi
 	if [ ${Ot_bool} -eq 1 ]
 	then
-	
 	fi
 	if [ ${Qt_bool} -eq 1 ]
 	then
-	
+	fi
+fi
+comment
+
+if [ ${dt_bool} -eq 0 ]
+then
+#FGSAOQ
+#= France,Guyane,Stpier,Antille,Ocean Indien,Antartique
+	if [ ${Ft_bool} -eq 1 ]
+	then	
+	fi
+	if [ ${Gt_bool} -eq 1 ]
+	then
+	fi
+	if [ ${St_bool} -eq 1 ]
+	then
+	fi
+	if [ ${At_bool} -eq 1 ]
+	then
+	fi
+	if [ ${Ot_bool} -eq 1 ]
+	then
+	fi
+	if [ ${Qt_bool} -eq 1 ]
+	then
 	fi
 
 
 
-2014-0-0
 
 
 
