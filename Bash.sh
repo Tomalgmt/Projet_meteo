@@ -8,9 +8,13 @@ Usage:
 Script --help,-h,-t,-a,-p,-m,-v,-w,--trichaine,--triavl,--triabr,-d [Day-Month-Year]_[Day-Month-Year]
 List of the arguments : 
 	--help					Display this menu
-	-t[1-3]					Display a graph of the temperature in the choosen date and the choosen location (
+	-t1					Display a graph of the average temperature with the maximum and minimum temperature as error margins based on the choosen location
+	-t2					Display a graph of the average temperature based on the choosen date
+	-t3					Display a graph of the temperature based on the choosen date and the choosen location
 	-h					Display a graph of the altitude in the choosen date and the choosen location
-	-p[1-3]					Display a graph of the pressure in the choosen date and the choosen location
+	-p1					Display a graph of the average pressure with the maximum and minimum pressure as error margins based on the choosen location
+	-p2					Display a graph of the average pressure based on the choosen date
+	-p3					Display a graph of the pressure based on the choosen date and the choosen location
 	-w					Display a graph of the wind in the choosen date and the choosen location
 	-m					Display a graph of the humidity in the choosen date and the choosen location
 	--trichain				Sort the data file with a chain sort
