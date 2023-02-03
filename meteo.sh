@@ -551,14 +551,13 @@ EOF
 		set isosamples 50,50
 		set xyplane relative 0
 		set dgrid3d
-		set pm3d
-		unset surface
+		set pm3d interpolate 0,0
 		set view map
 		set xlabel "Latitude"
 		set ylabel "Longitude"
 		set cblabel "Height"
 		set colorbox vertical origin screen 0.9, 0.2 size screen 0.05, 0.6 front noinvert bdefault
-		splot "dRheight_cut_temp.csv" w pm3d lw 7
+		splot "dRheight_cut_temp.csv" w pm3d lw 0
 EOF
 		rm dRheight_cut_temp.csv
 		rm dRheight_cut.csv
@@ -582,6 +581,17 @@ EOF
 		then
 			./sort "dRwind1_cut.csv" "dRwind1_cut.csv" --tab -r
 		fi
+		sed "s/,/;/g" dRwind_cut.csv > dRwind_cut_temp.csv
+		    gnuplot -p <<- EOF
+			set datafile separator ";"
+        		set xlabel "Longitude"
+        		set ylabel "Latitude"
+			set title "Graph of wind vectors based on coordinates"
+			set samples 100
+        		plot "dRwind_cut_temp.csv" u 3:4:1:2 w vectors title "Wind direction"
+EOF
+		rm dRwind_cut_temp.csv
+		rm wind_cut_temp.csv
 	fi
 	if [ ${mt_bool} -eq 1 ]
 	then
@@ -616,14 +626,14 @@ EOF
 		set isosamples 50,50
 		set xyplane relative 0
 		set dgrid3d
-		set pm3d
-		unset surface
+		set pm3d interpolate 0,0
 		set view map
 		set xlabel "Latitude"
 		set ylabel "Longitude"
 		set cblabel "Moisture"
+		set title "Level of moisture based on coordinates"
 		set colorbox vertical origin screen 0.9, 0.2 size screen 0.05, 0.6 front noinvert bdefault
-		splot "dRmoist_cut_temp.csv" w pm3d lw 7
+		splot "moist_cut_temp.csv" u 2:3:1 w pm3d lw 0
 EOF
 		rm dRmoist_cut.csv
 		rm dRmoist_cut_temp.csv
@@ -871,14 +881,13 @@ EOF
 		set isosamples 50,50
 		set xyplane relative 0
 		set dgrid3d
-		set pm3d
-		unset surface
+		set pm3d interpolate 0,0
 		set view map
 		set xlabel "Latitude"
 		set ylabel "Longitude"
 		set cblabel "Height"
 		set colorbox vertical origin screen 0.9, 0.2 size screen 0.05, 0.6 front noinvert bdefault
-		splot "height_cut_temp.csv" w pm3d lw 7
+		splot "height_cut_temp.csv" w pm3d lw 0
 EOF
 		rm height_cut_temp.csv
 		rm height_cut.csv
@@ -902,10 +911,22 @@ EOF
 		then
 			./sort "wind_cut.csv" "wind_cut.csv" --tab -r
 		fi
+		sed "s/,/;/g" wind_cut.csv > wind_cut_temp.csv
+		    gnuplot -p <<- EOF
+			set datafile separator ";"
+        		set xlabel "Longitude"
+        		set ylabel "Latitude"
+			set title "Graph of wind vectors based on coordinates"
+			set samples 100
+        		plot "wind_cut_temp.csv" u 3:4:1:2 w vectors title "Wind direction"
+EOF
+		rm wind_cut_temp.csv
+		rm wind_cut.csv
 	fi
 	if [ ${mt_bool} -eq 1 ]
 	then
 		cut -d';' -f10,6 $start_file > moist_cut.csv
+		sed -i 1d moist_cut.csv
 		echo "Separation des colonnes pour la creation des graphes"
 		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
 		then
@@ -930,20 +951,20 @@ EOF
 		reset session
 		set contour base
 		set border 4095 front lt black lw 1 dashtype solid
-		set terminal wxt size 1000, 600
+		set terminal wxt size 800, 600
 		unset key
 		set samples 50,50
 		set isosamples 50,50
 		set xyplane relative 0
 		set dgrid3d
-		set pm3d
-		unset surface
+		set pm3d interpolate 0,0
 		set view map
 		set xlabel "Latitude"
 		set ylabel "Longitude"
 		set cblabel "Moisture"
+		set title "Level of moisture based on coordinates"
 		set colorbox vertical origin screen 0.9, 0.2 size screen 0.05, 0.6 front noinvert bdefault
-		splot "moist_cut_temp.csv" w pm3d lw 7
+		splot "moist_cut_temp.csv" u 2:3:1 w pm3d lw 1
 EOF
 		rm moist_cut.csv
 		rm moist_cut_temp.csv
