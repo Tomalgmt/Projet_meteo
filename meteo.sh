@@ -391,7 +391,7 @@ then
 		fi
 		echo "Creation du graphe"
 		rm dRtemp1_cut.csv
-		gnuplot -p 2> /dev/null <<- EOF
+			gnuplot -p 2> /dev/null <<- EOF
 		set grid nopolar
 		set style data lines
 		set datafile separator ";"
@@ -399,7 +399,7 @@ then
 		set xlabel "Station"
 		set ylabel "Temperature"
 		plot "dRtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dRtemp1_final.csv" u 1:2 w line lw 2
-		EOF
+EOF
 		rm dRtemp1_final.csv
 	fi
 	if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
@@ -473,7 +473,7 @@ then
 		set xlabel "Station"
 		set ylabel "Pressure"
 		plot "dRpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dRpress1_final.csv" u 1:2 w line lw 2
-		EOF
+EOF
 		rm dRpress1_final.csv
 	fi
 	if [ ${pt_bool} -eq 2 ]
@@ -538,6 +538,30 @@ then
 		then
 			./sort "dRheight_cut.csv" "dRheight_cut.csv" --tab -r
 		fi
+		sed "s/,/;/g" dRheight_cut.csv > dRheight_cut_temp.csv
+		sed "s/;/ /g" dRheight_cut_temp.csv > dRheight_cut.csv
+		gawk -f addblanks.awk  dRheight_cut.csv > dRheight_cut_temp.csv
+		gnuplot -p <<- EOF
+		reset session
+		set contour base
+		set terminal wxt size 1000, 600
+		set border 4095 front lt black lw 1 dashtype solid
+		unset key
+		set samples 50,50
+		set isosamples 50,50
+		set xyplane relative 0
+		set dgrid3d
+		set pm3d
+		unset surface
+		set view map
+		set xlabel "Latitude"
+		set ylabel "Longitude"
+		set cblabel "Height"
+		set colorbox vertical origin screen 0.9, 0.2 size screen 0.05, 0.6 front noinvert bdefault
+		splot "dRheight_cut_temp.csv" w pm3d lw 7
+EOF
+		rm dRheight_cut_temp.csv
+		rm dRheight_cut.csv
 	fi
 	if [ ${wt_bool} -eq 1 ]
 	then
@@ -579,6 +603,30 @@ then
 		then
 			./sort "dRmoist_cut.csv" "dRmoist_cut.csv" --tab -r
 		fi
+		sed "s/,/;/g" dRmoist_cut.csv > dRmoist_cut_temp.csv
+		sed "s/;/ /g" dRmoist_cut_temp.csv > dRmoist_cut.csv
+		gawk -f addblanks.awk  dRmoist_cut.csv > dRmoist_cut_temp.csv
+			gnuplot -p <<- EOF
+		reset session
+		set contour base
+		set border 4095 front lt black lw 1 dashtype solid
+		set terminal wxt size 1000, 600
+		unset key
+		set samples 50,50
+		set isosamples 50,50
+		set xyplane relative 0
+		set dgrid3d
+		set pm3d
+		unset surface
+		set view map
+		set xlabel "Latitude"
+		set ylabel "Longitude"
+		set cblabel "Moisture"
+		set colorbox vertical origin screen 0.9, 0.2 size screen 0.05, 0.6 front noinvert bdefault
+		splot "dRmoist_cut_temp.csv" w pm3d lw 7
+EOF
+		rm dRmoist_cut.csv
+		rm dRmoist_cut_temp.csv
 	fi	
 	rm date_filtered.csv
 fi
@@ -673,7 +721,7 @@ then
 		set xlabel "Station"
 		set ylabel "Temperature"
 		plot "dRtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dRtemp1_final.csv" u 1:2 w line lw 2
-		EOF
+EOF
 		rm dRtemp1_cut.csv
 		rm dRtemp1_final.csv
 	fi
@@ -747,7 +795,7 @@ then
 		set xlabel "Station"
 		set ylabel "Pressure"
 		plot "dRpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dRpress1_final.csv" u 1:2 w line lw 2
-		EOF
+EOF
 		rm dRpress1_final.csv
 	fi
 	if [ ${pt_bool} -eq 2 ]
@@ -810,6 +858,30 @@ then
 		then
 			./sort "height_cut.csv" "height_cut.csv" --tab -r
 		fi
+		sed "s/,/;/g" height_cut.csv > height_cut_temp.csv
+		sed "s/;/ /g" height_cut_temp.csv > height_cut.csv
+		gawk -f addblanks.awk  height_cut.csv > height_cut_temp.csv
+		gnuplot -p <<- EOF
+		reset session
+		set contour base
+		set terminal wxt size 1000, 600
+		set border 4095 front lt black lw 1 dashtype solid
+		unset key
+		set samples 50,50
+		set isosamples 50,50
+		set xyplane relative 0
+		set dgrid3d
+		set pm3d
+		unset surface
+		set view map
+		set xlabel "Latitude"
+		set ylabel "Longitude"
+		set cblabel "Height"
+		set colorbox vertical origin screen 0.9, 0.2 size screen 0.05, 0.6 front noinvert bdefault
+		splot "height_cut_temp.csv" w pm3d lw 7
+EOF
+		rm height_cut_temp.csv
+		rm height_cut.csv
 	fi			
 	if [ ${wt_bool} -eq 1 ]
 	then
@@ -851,5 +923,29 @@ then
 		then
 			./sort "moist_cut.csv" "moist_cut.csv" --tab -r
 		fi			
+		sed "s/,/;/g" moist_cut.csv > moist_cut_temp.csv
+		sed "s/;/ /g" moist_cut_temp.csv > moist_cut.csv
+		gawk -f addblanks.awk  moist_cut.csv > moist_cut_temp.csv
+			gnuplot -p <<- EOF
+		reset session
+		set contour base
+		set border 4095 front lt black lw 1 dashtype solid
+		set terminal wxt size 1000, 600
+		unset key
+		set samples 50,50
+		set isosamples 50,50
+		set xyplane relative 0
+		set dgrid3d
+		set pm3d
+		unset surface
+		set view map
+		set xlabel "Latitude"
+		set ylabel "Longitude"
+		set cblabel "Moisture"
+		set colorbox vertical origin screen 0.9, 0.2 size screen 0.05, 0.6 front noinvert bdefault
+		splot "moist_cut_temp.csv" w pm3d lw 7
+EOF
+		rm moist_cut.csv
+		rm moist_cut_temp.csv
 	fi
 fi
