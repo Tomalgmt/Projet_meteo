@@ -1,14 +1,18 @@
 #include"header.h"
 
+//----------------------[STRUCTURE]-----------------------
+
 typedef struct Chain{
 	char val[255];
 	int count;
 	struct Chain* next;
 }Chain;
 
+//----------------------[FUNCTIONS]-----------------------
+
 Chain* createChain(char e[255]){
 	Chain* a;
-	a = (Chain*)malloc(sizeof(Chain));
+	a = (Chain*)malloc(sizeof(Chain)); // creates a Chain
 	if (a == NULL){
 		exit(1);
 	}
@@ -19,7 +23,7 @@ Chain* createChain(char e[255]){
 }
 
 Chain* insertStart(Chain* a, char e[255]){
-	Chain* new = createChain(e);
+	Chain* new = createChain(e);   // function that insert the Chain node at the start of the code
 	new->next = a;
 	return new;
 }
@@ -35,7 +39,7 @@ Chain* insertChain (Chain* a, char e[255]){
 		
 	}
 	else if (strcmp(a->val, e) < 0){
-		while (p1->next != NULL && strcmp(p1->next->val, e) < 0){
+		while (p1->next != NULL && strcmp(p1->next->val, e) < 0){ // insert the Chain node into a Chain list in ascending order
 			p1 = p1->next;
 		}
 		if (strcmp(a->val, e) == 0){
@@ -68,7 +72,7 @@ Chain* insertChain_reverse (Chain* a, char e[255]){
 		
 	}
 	else if (strcmp(a->val, e) > 0){
-		while(p1->next != NULL && strcmp(p1->next->val, e) > 0){
+		while(p1->next != NULL && strcmp(p1->next->val, e) > 0){ //insert the new node into a Chain list in descending order
 			p1 = p1->next;
 		}
 		if (strcmp(a->val, e) == 0){
@@ -93,7 +97,7 @@ Chain* insertChain_reverse (Chain* a, char e[255]){
 void printChain(Chain* a, FILE *file){
 	if (a != NULL){
 		for (int i=0; i < a->count; i++){
-			fprintf(file, "%s", a->val);
+			fprintf(file, "%s", a->val); //prints the data into the output file 
 		}
 		printChain(a->next, file);
 		free(a);
@@ -101,13 +105,3 @@ void printChain(Chain* a, FILE *file){
 	}
 }
 
-void printChain_reverse(Chain* a, FILE *file){
-	if (a != NULL){
-		for (int i=0; i < a->count; i++){
-			fprintf(file, "%s", a->val);
-		}
-		printChain_reverse(a->next, file);
-		free(a);
-		
-	}
-}
