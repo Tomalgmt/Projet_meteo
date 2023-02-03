@@ -172,8 +172,7 @@ while getopts "t:hp:wmd:CVByFGSAOQ" date; do
 done
 
 
-Region_bool=${Ft_bool}+${Gt_bool}+${St_bool}+${At_bool}+${Ot_bool}+${Qt_bool}
-
+Region_bool="$((Ft_bool+Gt_bool+St_bool+At_bool+Ot_bool+Qt_bool))"
 #}--------------------------------------[VERIFICATIONS]----------------------------------------------{
 
 if [ $# == 0 ]
@@ -182,7 +181,7 @@ then
 	exit 0
 fi
 
-sort_bool_verif=$Ct_bool+$Vt_bool+$Bt_bool
+sort_bool_verif="$((Ct_bool+Vt_bool+Bt_bool))"
 if [ ${sort_bool} -gt 1 ]
 then
 	echo "PARAMETER ERROR : ONLY 1 SORT PARAMETER ALLOWED"
@@ -322,91 +321,6 @@ then
 	then	
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 0 && $15 <= 95999 {print $0}' date_filtered.csv > region_filtered.csv
-		if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
-		then
-			rm date_filtered.csv
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			rm date_filtered.csv
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
 	fi
 	
 #}---------------------------------------------[GUYANE]---------------------------------------------{
@@ -415,278 +329,22 @@ then
 	then	
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 97300 && $15 <= 97399 {print $0}' date_filtered.csv > region_filtered.csv
-		if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
-		then
-			rm date_filtered.csv
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			rm date_filtered.csv
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-
 	fi
 	
 #}---------------------------------------------[ST-PIERRE & MIQUELON]---------------------------------------------{
-
 	
 	if [ ${St_bool} -eq 1 ]
 	then	
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 97500 && $15 <= 97599 {print $0}' date_filtered.csv > region_filtered.csv
-		if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
-		then
-			rm date_filtered.csv
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			rm date_filtered.csv
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
 	fi
-		
+	
 #}---------------------------------------------[ANTILLES]---------------------------------------------{
 	
 	if [ ${At_bool} -eq 1 ]
 	then
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 97100 && $15 <= 97299 {print $0}' date_filtered.csv > region_filtered.csv
-		if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
-		then
-			rm date_filtered.csv
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			rm date_filtered.csv
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
 	fi
 	
 #}---------------------------------------------[INDIEN OCEAN]---------------------------------------------{
@@ -695,92 +353,7 @@ then
 	then
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 97600 && $15 <= 97699 {print $0}' date_filtered.csv > region_filtered.csv
-		awk -F";" '$15 >= 97400 && $15 <= 97499 {print $0}' date_filtered.csv >> region_filtered.csv	
-		if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
-		then
-			rm date_filtered.csv
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			rm date_filtered.csv
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
+		awk -F";" '$15 >= 97400 && $15 <= 97499 {print $0}' date_filtered.csv >> region_filtered.csv
 	fi
 	
 #}---------------------------------------------[ANTARCTIQ OCEAN]---------------------------------------------{
@@ -789,96 +362,212 @@ then
 	then
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 98400 && $15 <= 98499 {print $0}' date_filtered.csv > region_filtered.csv
-		if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
+	fi
+	
+#}---------------------------------------------[GENERATION OF THE FIRST GRAPHS]---------------------------------------------{
+	
+	start_file="date_filtered.csv"
+	if [ "${Region_bool}" -eq 1 ]
+	then			#Check the region filter
+		start_file="region_filtered.csv"
+	fi
+	if [ ${tt_bool} -eq 1 ]	
+	then
+	
+		cut -d';' -f1,11 $start_file > dRtemp1_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		filename=dRtemp1_cut.csv
+		col1=($(cut -d';' -f1 $filename | sort | uniq))
+		for val in "${col1[@]}";do
+			avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
+			min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
+			max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
+			echo "$val;$avg;$min;$max" >> dRtemp1_final.csv
+			#do the average temperature of each station
+		done
+		if [ $start_file != "meteo_filtered_data_v1.csv" ]
 		then
-			rm date_filtered.csv
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
+			rm $start_file 2> /dev/null
 		fi
-		if [ ${tt_bool} -eq 2 ]	
+		echo "Creation du graphe"
+		rm dRtemp1_cut.csv
+		gnuplot -p 2> /dev/null <<- EOF
+		set grid nopolar
+		set style data lines
+		set datafile separator ";"
+		set ytics norangelimit logscale autofreq
+		set xlabel "Station"
+		set ylabel "Temperature"
+		plot "dRtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dRtemp1_final.csv" u 1:2 w line lw 2
+		EOF
+		rm dRtemp1_final.csv
+	fi
+	if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
+	then
+		cut -d';' -f2,11 $start_file > dRtemp2_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		if [ $start_file != "meteo_filtered_data_v1.csv" ]
 		then
-			cut -d';' -f1 date_filtered.csv | sed 1d >coord.txt
-			cut -d';' -f11,12,13 meteo_filtered_data_v1.csv | sed 1d >temp.txt
-			rm stationid.txt
-			rm temp.txt
+			rm $start_file
 		fi
-		if [ ${tt_bool} -eq 3 ]	
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
 		then
-			echo "coucou"	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
+			./sort "dRtemp2_cut.csv" "dRtemp2_cut.csv" --avl
+		else if [ $Bt_bool -eq 1 ]
 		then
-			rm date_filtered.csv
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
+			./sort "dRtemp2_cut.csv" "dRtemp2_cut.csv" --abr
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "dRtemp2_cut.csv" "dRtemp2_cut.csv" --abr
+		fi
 			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
+	fi
+	if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
+	then
+		cut -d';' -f1,2,11 $start_file > dRtemp3_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
 		fi
-		if [ ${pt_bool} -eq 2 ]
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
 		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
+			./sort "dRtemp3_cut.csv" "dRtemp3_cut.csv" --avl
+		else if [ $Bt_bool -eq 1 ]
 		then
-			echo "Fonctionalitée non codée."	
+			./sort "dRtemp3_cut.csv" "dRtemp3_cut.csv" --abr
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "dRtemp3_cut.csv" "dRtemp3_cut.csv" --abr
 		fi
-		if [ ${ht_bool} -eq 1 ]
+	fi	
+	if [ ${pt_bool} -eq 1 ]
+	then
+		cut -d';' -f1,7 $start_file > dRpress1_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		filename=dRpress1_cut.csv
+		
+		col1=($(cut -d';' -f1 $filename | sort | uniq ))
+		for val in "${col1[@]}";do
+			avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
+			min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 < min { min=$1 } END { print min }')
+			max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
+			echo "$val;$avg;$min;$max" >> dRpress1_final.csv  
+			#do the average pressure of each station
+		done
+		echo "Creation du graphe"
+		rm dRpress1_cut.csv
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
 		then
-			echo "Fonctionalitée non codée."	
+			rm "$start_file"
 		fi
-		if [ ${wt_bool} -eq 1 ]
+		gnuplot -p 2> /dev/null <<- EOF
+		set grid nopolar
+		set style data lines
+		set datafile separator ";"
+		set ytics norangelimit logscale autofreq
+		set xlabel "Station"
+		set ylabel "Pressure"
+		plot "dRpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dRpress1_final.csv" u 1:2 w line lw 2
+		EOF
+		rm dRpress1_final.csv
+	fi
+	if [ ${pt_bool} -eq 2 ]
+	then
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
 		then
-			echo "Fonctionalitée non codée."	
+			rm $start_file
 		fi
-		if [ ${mt_bool} -eq 1 ]
+		cut -d';' -f2,7 $start_file > dRpress2_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
 		then
-			echo "Fonctionalitée non codée."	
+			./sort "dRpress2_cut.csv" "dRpress2_cut.csv" --avl
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "dRpress2_cut.csv" "dRpress2_cut.csv" --abr
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "dRpress2_cut.csv" "dRpress2_cut.csv" --abr
 		fi
 	fi
+	if [ ${pt_bool} -eq 3 ]
+	then
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		cut -d';' -f1,2,7 $start_file > dRpress3_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		then
+			./sort "dRpress3_cut.csv" "dRpress3_cut.csv" --avl
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "dRpress3_cut.csv" "dRpress3_cut.csv" --abr
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "dRpress3_cut.csv" "dRpress3_cut.csv" --abr
+		fi
+	fi
+	if [ ${ht_bool} -eq 1 ]
+	then
+		cut -d';' -f10,14 $start_file > dRheight_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		then
+			./sort "dRheight_cut.csv" "dRheight_cut.csv" --avl -r
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "dRheight_cut.csv" "dRheight_cut.csv" --abr -r
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "dRheight_cut.csv" "dRheight_cut.csv" --abr -r
+	fi
+	if [ ${wt_bool} -eq 1 ]
+	then
+		cut -d';' -f4,5,10 $start_file > dRwind_cut.csv
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		then
+			./sort "dRwind1_cut.csv" "dRwind_cut.csv" --avl -r
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "dRwind1_cut.csv" "dRwind1_cut.csv" --abr -r
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "dRwind1_cut.csv" "dRwind1_cut.csv" --abr -r
+	fi
+	fi
+	if [ ${mt_bool} -eq 1 ]
+	then
+		cut -d';' -f10,6 $start_file > dRmoist_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		then
+			./sort "dRmoist_cut.csv" "dRmoist_cut.csv" --avl -r
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "dRmoist_cut.csv" "dRmoist_cut.csv" --abr -r
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "dRmoist_cut.csv" "dRmoist_cut.csv" --abr -r
+		fi
+	fi	
+	rm date_filtered.csv
 fi
+	
 
 
 #}------------------------------------------------------------------[NO DATE FILTER]------------------------------------------------------------------------{
@@ -893,181 +582,13 @@ then
 	then	
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 0 && $15 <= 95999 {print $0}' meteo_filtered_data_v1.csv > region_filtered.csv
-		if [ ${tt_bool} -eq 1 ]
-		then
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]		
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${tt_bool} -eq 3 ]		
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
 	fi
 
-#}---------------------------------------------[GUYANE]---------------------------------------------{
-	
+#}---------------------------------------------[GUYANE]---------------------------------------------
 	if [ ${Gt_bool} -eq 1 ]
 	then
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 97300 && $15 <= 97399 {print $0}' meteo_filtered_data_v1.csv > region_filtered.csv
-		if [ ${tt_bool} -eq 1 ]		
-		then
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]		#TRI DES COORDONNEES
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${tt_bool} -eq 3 ]		#TRI DATE PUIS STATION
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-
 	fi
 	
 #}---------------------------------------------[ST-PIERRE & MIQUELON]---------------------------------------------{
@@ -1076,460 +597,231 @@ then
 	then
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 97500 && $15 <= 97599 {print $0}' meteo_filtered_data_v1.csv > region_filtered.csv
-		if [ ${tt_bool} -eq 1 ]	
-		then
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]	
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${tt_bool} -eq 3 ]	
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-	fi
-
 	fi
 	
 #}---------------------------------------------[ANTILLES]---------------------------------------------{
-
+	
 	if [ ${At_bool} -eq 1 ]
 	then
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 97100 && $15 <= 97299 {print $0}' meteo_filtered_data_v1.csv > region_filtered.csv
-		if [ ${tt_bool} -eq 1 ]		#TRI DES STATIONS
-		then
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]	
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${tt_bool} -eq 3 ]	
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
 	fi
 	
-	
 #}---------------------------------------------[INDIAN OCEAN]---------------------------------------------{
-
-
+	
 	if [ ${Ot_bool} -eq 1 ]
 	then
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 97600 && $15 <= 97699 {print $0}' meteo_filtered_data_v1.csv > region_filtered.csv
 		awk -F";" '$15 >= 97400 && $15 <= 97499 {print $0}' meteo_filtered_data_v1.csv >> region_filtered.csv	
-		if [ ${tt_bool} -eq 1 ]	
-		then
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]	
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${tt_bool} -eq 3 ]	
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
 	fi
 	
-	
 #}---------------------------------------------[ANTARTIQUE OCEAN]---------------------------------------------{
-
-
+	
 	if [ ${Qt_bool} -eq 1 ]
 	then
 		echo "Generation dossier csv par date et par region"
 		awk -F";" '$15 >= 98400 && $15 <= 98499 {print $0}' meteo_filtered_data_v1.csv > region_filtered.csv
-		if [ ${tt_bool} -eq 1 ]
-		then
-			cut -d';' -f1,11 region_filtered.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
-		fi
-		if [ ${tt_bool} -eq 2 ]		
-		then
-			echo "Fonctionalitée non codée."
-		fi
-		if [ ${tt_bool} -eq 3 ]		
-		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
-		then
-			cut -d';' -f1,7 region_filtered.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
-		then
-			echo "Fonctionalitée non codée."	
-		f	i
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
 	fi
-fi
-
-#}---------------------------------------------[NO DATE FILTER NOOR REGION]---------------------------------------------{
-
-if [ ${dt_bool} -eq 0 ]
-then
-	if [ ${region_bool} -eq 0 ]
+	
+#}---------------------------------------------[GENERATION OF THE FIRST GRAPHS]---------------------------------------------{
+	
+	start_file="meteo_filtered_data_v1.csv"
+	if [ "${Region_bool}" -eq 1 ]
+	then			#Check the region filter
+		start_file="region_filtered.csv"
+	fi
+	
+	if [ ${tt_bool} -eq 1 ]
 	then
-		if [ ${tt_bool} -eq 1 ]	
+		cut -d';' -f1,11 $start_file > dRtemp1_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		filename=dRtemp1_cut.csv
+		col1=($(cut -d';' -f1 $filename | sort | uniq))
+		for val in "${col1[@]}";do
+			avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
+			min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
+			max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
+			echo "$val;$avg;$min;$max" >> dRtemp1_final.csv
+		#do the average temperature of each station
+		done
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
 		then
-			cut -d';' -f1,11 meteo_filtered_data_v1.csv > dFtemp1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFtemp1_cut.csv
-			col1=($(cut -d';' -f1 $filename | sort | uniq))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFtemp1_final.csv
-				#do the average temperature of each station
-			done
-			rm region_filtered.csv
-			echo "Creation du graphe"
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Temperature"
-			plot "dFtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dFtemp1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFtemp1_cut.csv
-			rm dFtemp1_final.csv
+			rm $start_file
 		fi
-		if [ ${tt_bool} -eq 2 ]		
+		echo "Creation du graphe"
+		gnuplot -p 2> /dev/null <<- EOF
+		set grid nopolar
+		set style data lines
+		set datafile separator ";"
+		set ytics norangelimit logscale autofreq
+		set xlabel "Station"
+		set ylabel "Temperature"
+		plot "dRtemp_final.csv" u 1:4:3 w filledcurve title "Temperature", "dRtemp1_final.csv" u 1:2 w line lw 2
+		EOF
+		rm dRtemp1_cut.csv
+		rm dRtemp1_final.csv
+	fi
+
+	if [ ${tt_bool} -eq 2 ]		
+	then
+		cut -d';' -f1,11 $start_file > temp2_cut.csv
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
 		then
-			echo "Fonctionalitée non codée."
+			rm $start_file
 		fi
-		if [ ${tt_bool} -eq 3 ]		
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
 		then
-			echo "Fonctionalitée non codée."	
-		fi	
-		if [ ${pt_bool} -eq 1 ]
+			./sort "temp2_cut.csv" "temp2_cut.csv" --avl
+		else if [ $Bt_bool -eq 1 ]
 		then
-			cut -d';' -f1,7 meteo_filtered_data_v1.csv > dFpress1_cut.csv
-			echo "Separation des colonnes pour la creation des graphes"
-			filename=dFpress1_cut.csv
-			
-			col1=($(cut -d';' -f1 $filename | sort | uniq ))
-			for val in "${col1[@]}";do
-				avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {print sum/NR}')
-				min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { min=$1 } $1 <= min { min=$1 } END { print min }')
-				max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 { max=$1 } $1 > max { max=$1 } END { print max }')
-				echo "$val;$avg;$min;$max" >> dFpress1_final.csv  
-				#do the average pressure of each station
-			done
-			echo "Creation du graphe"
-			rm region_filtered.csv
-			rm dFpress1_cut.csv
-			gnuplot -p 2> /dev/null <<- EOF
-			set grid nopolar
-			set style data lines
-			set datafile separator ";"
-			set ytics norangelimit logscale autofreq
-			set xlabel "Station"
-			set ylabel "Pressure"
-			plot "dFpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dFpress1_final.csv" u 1:2 w line lw 2
-			EOF
-			rm dFpress1_final.csv
-		fi
-		if [ ${pt_bool} -eq 2 ]
+			./sort "temp2_cut.csv" "temp2_cut.csv" --abr
+		else if [ $Vt_bool -eq 1 ]
 		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${pt_bool} -eq 3 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${ht_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${wt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
-		fi
-		if [ ${mt_bool} -eq 1 ]
-		then
-			echo "Fonctionalitée non codée."	
+			./sort "temp2_cut.csv" "temp2_cut.csv" --abr
 		fi
 	fi
+	if [ ${tt_bool} -eq 3 ]		
+	then
+		cut -d';' -f1,2,11 $start_file > temp3_cut.csv
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		then
+			./sort "temp3_cut.csv" "temp3_cut.csv" --avl
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "temp3_cut.csv" "temp3_cut.csv" --abr
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "temp3_cut.csv" "temp3_cut.csv" --abr
+		fi
+		exit 0				
+	fi	
+	if [ ${pt_bool} -eq 1 ]
+	then
+		cut -d';' -f1,7 $start_file > dRpress1_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		filename=dRpress1_cut.csv
+		
+		col1=($(cut -d';' -f1 $filename | sort -u))
+		for val in "${col1[@]}"; do
+		  avg=$(grep -w $val $filename | cut -d';' -f2 | awk '{sum+=$1} END {printf "%.2f", sum/NR}')
+		  min=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 {min=$1} $1 <= min {min=$1} END {printf "%.2f", min}')
+		  max=$(grep -w $val $filename | cut -d';' -f2 | awk 'NR == 1 {max=$1} $1 > max {max=$1} END {printf "%.2f", max}')
+		  echo "$val;$avg;$min;$max" >> dRpress1_final.csv
+		done 
+			#do the average pressure of each station
+		echo "Creation du graphe"
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		rm dRpress1_cut.csv
+		gnuplot -p 2> /dev/null <<- EOF
+		set grid nopolar
+		set style data lines
+		set datafile separator ";"
+		set ytics norangelimit logscale autofreq
+		set xlabel "Station"
+		set ylabel "Pressure"
+		plot "dRpress1_final.csv" u 1:4:3 w filledcurve title "Pressure", "dRpress1_final.csv" u 1:2 w line lw 2
+		EOF
+		rm dRpress1_final.csv
+	fi
+	if [ ${pt_bool} -eq 2 ]
+	then
+		cut -d';' -f2,7 $start_file > press2_cut.csv
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		then
+			./sort "press2_cut.csv" "press2_cut.csv" --avl
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "press2_cut.csv" "press2_cut.csv" --abr
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "press_cut3.csv" "press2_cut.csv" --abr
+		fi
+	fi
+	if [ ${pt_bool} -eq 3 ]
+	then
+		cut -d';' -f1,2,7 $start_file > dRpress1_cut.csv
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		then
+			./sort "press3_cut.csv" "press3_cut.csv" --avl
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "press3_cut.csv" "press3_cut.csv" --abr
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "press3_cut.csv" "press3_cut.csv" --abr
+		fi
+	fi
+	if [ ${ht_bool} -eq 1 ]
+	then
+		cut -d';' -f10,14 $start_file > height_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		then
+			./sort "height_cut.csv" "height_cut.csv" --avl -r
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "height_cut.csv" "height_cut.csv" --abr -r
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "height_cut.csv" "height_cut.csv" --abr -r
+	fi			
+	fi
+	if [ ${wt_bool} -eq 1 ]
+	then
+		cut -d';' -f4,5,10 $start_file > wind_cut.csv
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		then
+			./sort "wind_cut.csv" "wind_cut.csv" --avl -r
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "wind_cut.csv" "wind_cut.csv" --abr -r
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "wind_cut.csv" "wind_cut.csv" --abr -r
+	fi
+	if [ ${mt_bool} -eq 1 ]
+	then
+		cut -d';' -f10,6 $start_file > moist_cut.csv
+		echo "Separation des colonnes pour la creation des graphes"
+		if [ "$start_file" != "meteo_filtered_data_v1.csv" ]
+		then
+			rm $start_file
+		fi
+		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		then
+			./sort "moist_cut.csv" "moist_cut.csv" --avl -r
+		else if [ $Bt_bool -eq 1 ]
+		then
+			./sort "moist_cut.csv" "moist_cut.csv" --abr -r
+		else if [ $Vt_bool -eq 1 ]
+		then
+			./sort "moist_cut.csv" "moist_cut.csv" --abr -r
+		fi			
+	fi
 fi
+
+
