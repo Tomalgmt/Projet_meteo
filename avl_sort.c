@@ -1,5 +1,7 @@
 #include"header.h"
 
+//----------------------[STRUCTURE]-----------------------------
+
 typedef struct AVL{
 	char val[255];
 	int balance;
@@ -8,11 +10,13 @@ typedef struct AVL{
 	struct AVL* right;
 }AVL;
 
+//----------------------[FUNCTIONS]-----------------------------
+
 AVL* createAVL(char e[255]){
 	AVL* a;
 	a =(AVL*)malloc(sizeof(AVL));
 	strcpy(a->val, e);
-		a->balance = 0;
+		a->balance = 0;             //Creates an AVL
 		a->count = 1;
 		a->left = NULL;
 		a->right = NULL;
@@ -26,7 +30,7 @@ AVL* rotate_left(AVL* a){
 		a->right = pivot->left;
 		pivot->left = a;
 		a->balance = eq_a-max(eq_p,0)-1;
-		pivot->balance = min(min(eq_a-2,eq_a+eq_p-2),eq_p-1);
+		pivot->balance = min(min(eq_a-2,eq_a+eq_p-2),eq_p-1);  //Rotates a node anti-clockwise
 		a = pivot;
 	return a;
 }
@@ -38,7 +42,7 @@ AVL* rotate_right(AVL* a){
 		a->left = pivot->right;
 		pivot->right = a;
 		a->balance = eq_a-min(eq_p,0)+1;
-		pivot->balance = max(max(eq_a+2,eq_a+eq_p+2),eq_p+1);
+		pivot->balance = max(max(eq_a+2,eq_a+eq_p+2),eq_p+1); //Rotates a node clockwise
 		a = pivot;
 	return a;
 }
@@ -64,7 +68,7 @@ AVL* balanceAVL(AVL *a){
 	}
 	else if (a->balance == -2){
 		if (a->left->balance <= 0){
-			return rotate_right(a);
+			return rotate_right(a);       //balances the tree with the help of a h variable 
 		}
 		else {
 			return double_rotate_right(a);
@@ -83,7 +87,7 @@ AVL* insertAVL(AVL* a, char e[255], int* h){
 		*h = -*h;
 	}
 	else if (strcmp(e ,a->val) > 0){
-		a->right = insertAVL(a->right, e, h);
+		a->right = insertAVL(a->right, e, h);   //insert a new node into an existing tree
 	}
 	else {
 		*h = 0;
@@ -107,7 +111,7 @@ void printAVL(AVL* a, FILE *file){
 	if (a != NULL){
 		printAVL(a->left, file);
 		for (int i=0;i<a->count;i++){
-			fprintf(file, "%s", a->val);
+			fprintf(file, "%s", a->val);  //print the sorted datas onto the output file starting from the smallest value
 		}
 		printAVL(a->right, file);
 		free(a);
@@ -119,7 +123,7 @@ void printAVL_reverse(AVL* a, FILE *file){
 	if (a != NULL){
 		printAVL_reverse(a->right, file);
 		for (int i=0;i<a->count;i++){
-			fprintf(file, "%s", a->val);
+			fprintf(file, "%s", a->val); //print the sorted datas onto the output file starting from the biggest value
 		}		
 		printAVL_reverse(a->left, file);
 		free(a);
