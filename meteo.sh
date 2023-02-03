@@ -410,15 +410,17 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "dRtemp2_cut.csv" "dRtemp2_cut.csv" --avl
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "dRtemp2_cut.csv" "dRtemp2_cut.csv" --abr
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "dRtemp2_cut.csv" "dRtemp2_cut.csv" --abr
+			./sort "dRtemp2_cut.csv" "dRtemp2_cut.csv" --tab
 		fi
 			
 	fi
@@ -430,15 +432,17 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "dRtemp3_cut.csv" "dRtemp3_cut.csv" --avl
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "dRtemp3_cut.csv" "dRtemp3_cut.csv" --abr
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "dRtemp3_cut.csv" "dRtemp3_cut.csv" --abr
+			./sort "dRtemp3_cut.csv" "dRtemp3_cut.csv" --tab
 		fi
 	fi	
 	if [ ${pt_bool} -eq 1 ]
@@ -480,15 +484,17 @@ then
 		fi
 		cut -d';' -f2,7 $start_file > dRpress2_cut.csv
 		echo "Separation des colonnes pour la creation des graphes"
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "dRpress2_cut.csv" "dRpress2_cut.csv" --avl
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "dRpress2_cut.csv" "dRpress2_cut.csv" --abr
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "dRpress2_cut.csv" "dRpress2_cut.csv" --abr
+			./sort "dRpress2_cut.csv" "dRpress2_cut.csv" --tab
 		fi
 	fi
 	if [ ${pt_bool} -eq 3 ]
@@ -499,15 +505,16 @@ then
 		fi
 		cut -d';' -f1,2,7 $start_file > dRpress3_cut.csv
 		echo "Separation des colonnes pour la creation des graphes"
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "dRpress3_cut.csv" "dRpress3_cut.csv" --avl
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "dRpress3_cut.csv" "dRpress3_cut.csv" --abr
-		else if [ $Vt_bool -eq 1 ]
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "dRpress3_cut.csv" "dRpress3_cut.csv" --abr
+			./sort "dRpress3_cut.csv" "dRpress3_cut.csv" --tab
 		fi
 	fi
 	if [ ${ht_bool} -eq 1 ]
@@ -518,15 +525,18 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
-			./sort "dRheight_cut.csv" "dRheight_cut.csv" --avl -r
-		else if [ $Bt_bool -eq 1 ]
-		then
-			./sort "dRheight_cut.csv" "dRheight_cut.csv" --abr -r
-		else if [ $Vt_bool -eq 1 ]
+			./sort "dRheight_cut.csv" "dRheight_cut.csv" --avl -
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "dRheight_cut.csv" "dRheight_cut.csv" --abr -r
+		fi
+		if [ $Ct_bool -eq 1 ]
+		then
+			./sort "dRheight_cut.csv" "dRheight_cut.csv" --tab -r
+		fi
 	fi
 	if [ ${wt_bool} -eq 1 ]
 	then
@@ -535,16 +545,18 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "dRwind1_cut.csv" "dRwind_cut.csv" --avl -r
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "dRwind1_cut.csv" "dRwind1_cut.csv" --abr -r
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "dRwind1_cut.csv" "dRwind1_cut.csv" --abr -r
-	fi
+			./sort "dRwind1_cut.csv" "dRwind1_cut.csv" --tab -r
+		fi
 	fi
 	if [ ${mt_bool} -eq 1 ]
 	then
@@ -554,15 +566,17 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "dRmoist_cut.csv" "dRmoist_cut.csv" --avl -r
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "dRmoist_cut.csv" "dRmoist_cut.csv" --abr -r
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "dRmoist_cut.csv" "dRmoist_cut.csv" --abr -r
+			./sort "dRmoist_cut.csv" "dRmoist_cut.csv" --tab -r
 		fi
 	fi	
 	rm date_filtered.csv
@@ -670,15 +684,17 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "temp2_cut.csv" "temp2_cut.csv" --avl
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "temp2_cut.csv" "temp2_cut.csv" --abr
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "temp2_cut.csv" "temp2_cut.csv" --abr
+			./sort "temp2_cut.csv" "temp2_cut.csv" --tab
 		fi
 	fi
 	if [ ${tt_bool} -eq 3 ]		
@@ -688,15 +704,17 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "temp3_cut.csv" "temp3_cut.csv" --avl
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "temp3_cut.csv" "temp3_cut.csv" --abr
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "temp3_cut.csv" "temp3_cut.csv" --abr
+			./sort "temp3_cut.csv" "temp3_cut.csv" --tab
 		fi
 		exit 0				
 	fi	
@@ -738,15 +756,17 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "press2_cut.csv" "press2_cut.csv" --avl
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "press2_cut.csv" "press2_cut.csv" --abr
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "press_cut3.csv" "press2_cut.csv" --abr
+			./sort "press_cut3.csv" "press2_cut.csv" --tab
 		fi
 	fi
 	if [ ${pt_bool} -eq 3 ]
@@ -756,15 +776,17 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "press3_cut.csv" "press3_cut.csv" --avl
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "press3_cut.csv" "press3_cut.csv" --abr
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "press3_cut.csv" "press3_cut.csv" --abr
+			./sort "press3_cut.csv" "press3_cut.csv" --tab
 		fi
 	fi
 	if [ ${ht_bool} -eq 1 ]
@@ -775,17 +797,19 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "height_cut.csv" "height_cut.csv" --avl -r
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "height_cut.csv" "height_cut.csv" --abr -r
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "height_cut.csv" "height_cut.csv" --abr -r
+			./sort "height_cut.csv" "height_cut.csv" --tab -r
+		fi
 	fi			
-	fi
 	if [ ${wt_bool} -eq 1 ]
 	then
 		cut -d';' -f4,5,10 $start_file > wind_cut.csv
@@ -793,15 +817,18 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "wind_cut.csv" "wind_cut.csv" --avl -r
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "wind_cut.csv" "wind_cut.csv" --abr -r
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "wind_cut.csv" "wind_cut.csv" --abr -r
+			./sort "wind_cut.csv" "wind_cut.csv" --tab -r
+		fi
 	fi
 	if [ ${mt_bool} -eq 1 ]
 	then
@@ -811,15 +838,17 @@ then
 		then
 			rm $start_file
 		fi
-		if [ $sort_bool_verif -eq 0 -o $Ct_bool -eq 1 ]
+		if [ $sort_bool_verif -eq 0 -o $Vt_bool -eq 1 ]
 		then
 			./sort "moist_cut.csv" "moist_cut.csv" --avl -r
-		else if [ $Bt_bool -eq 1 ]
+		fi
+		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "moist_cut.csv" "moist_cut.csv" --abr -r
-		else if [ $Vt_bool -eq 1 ]
+		fi
+		if [ $Ct_bool -eq 1 ]
 		then
-			./sort "moist_cut.csv" "moist_cut.csv" --abr -r
+			./sort "moist_cut.csv" "moist_cut.csv" --tab -r
 		fi			
 	fi
 fi
