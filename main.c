@@ -25,7 +25,7 @@ int main(int argc, char* argv[]){
 	FILE *file = fopen(argv[1],"r");
 	if (file == NULL) {
 		printf("error opening file");
-	return 1;
+	return 2;
 	}
 	AVL* rootAVL = NULL;
 		switch(argc){     //switch based on the number of arguments (if argc == 3, print avl (default case)) , if argc == 4 print in reverse OR based on the sort argument, if argc == 5 , print in reverse AND based on the sort argument
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]){
 				file=fopen(argv[2],"w");
 				if (file == NULL) {
 					printf("error opening file");
-				return 2;
+				return 3;
 				}
 
 				printAVL(rootAVL,file);
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]){
 				file=fopen(argv[2],"w");
 				if (file == NULL) {
 					printf("error opening file");
-					return 1;
+					return 3;
 				}
 				printChain(rootChain,file);
 				fclose(file);
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]){
 				file=fopen(argv[2],"w");
 				if (file == NULL) {
 					printf("error opening file");
-					return 1;
+					return 3;
 				}
 				printABR(rootABR,file);
 				fclose(file);
@@ -90,7 +90,7 @@ int main(int argc, char* argv[]){
 				file=fopen(argv[2],"w");
 				if (file == NULL) {
 					printf("error opening file");
-				return 2;
+				return 3;
 				}
 				printAVL(rootAVL,file);
 				fclose(file);
@@ -107,7 +107,7 @@ int main(int argc, char* argv[]){
 				file=fopen(argv[2],"w");
 				if (file == NULL) {
 					printf("error opening file");
-				return 2;
+				return 3;
 				}
 
 				printAVL_reverse(rootAVL,file);
@@ -127,7 +127,7 @@ int main(int argc, char* argv[]){
 				file=fopen(argv[2],"w");
 				if (file == NULL) {
 					printf("error opening file");
-				return 1;
+				return 3;
 				}
 				printChain(rootChain,file);
 				fclose(file);
@@ -143,7 +143,7 @@ int main(int argc, char* argv[]){
 				file=fopen(argv[2],"w");
 				if (file == NULL) {
 					printf("error opening file");
-				return 1;
+				return 3;
 				}
 				printABR_reverse(rootABR,file);
 				fclose(file);
@@ -160,7 +160,7 @@ int main(int argc, char* argv[]){
 				file=fopen(argv[2],"w");
 				if (file == NULL) {
 					printf("error opening file");
-				return 2;
+				return 3;
 				}
 				printAVL_reverse(rootAVL,file);
 				fclose(file);
