@@ -12,7 +12,10 @@
 		set pm3d
 		unset surface
 		set view map
+		set xlabel "Latitude"
+		set ylabel "Longitude"
+		set cblabel "Moisture"
 		set colorbox vertical origin screen 0.9, 0.2 size screen 0.05, 0.6 front noinvert bdefault
 
-		splot "blank.dat" w l smooth csplines
+		splot "blank.dat" w pm3d
 EOF
