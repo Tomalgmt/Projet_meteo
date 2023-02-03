@@ -512,6 +512,7 @@ then
 		if [ $Bt_bool -eq 1 ]
 		then
 			./sort "dRpress3_cut.csv" "dRpress3_cut.csv" --abr
+		fi
 		if [ $Ct_bool -eq 1 ]
 		then
 			./sort "dRpress3_cut.csv" "dRpress3_cut.csv" --tab
@@ -852,5 +853,3 @@ then
 		fi			
 	fi
 fi
-
-
