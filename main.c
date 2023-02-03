@@ -116,7 +116,7 @@ int main(int argc, char* argv[]){
 			if (!strcmp(argv[3], "--tab") || !strcmp(argv[4], "--tab")){
 				Chain* rootChain = NULL;
 				while(fgets(line, 255, file)!=NULL){
-					rootChain=insertChain(rootChain,line);
+					rootChain=insertChain_reverse(rootChain,line);
 				}
 				fclose(file);
 
@@ -125,7 +125,7 @@ int main(int argc, char* argv[]){
 					printf("error opening file");
 				return 1;
 				}
-				printChain_reverse(rootChain,file);
+				printChain(rootChain,file);
 				fclose(file);
 			}
 				
