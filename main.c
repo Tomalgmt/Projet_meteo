@@ -3,6 +3,8 @@
 #include"tritab.c"
 #include"triabr.c"
 
+//--------------------------[CHECK ARGUMENTS]-----------------------------
+
 int main(int argc, char* argv[]){
 	int h;
 	char line[255];
@@ -18,13 +20,15 @@ int main(int argc, char* argv[]){
 		}
 	}
 
+//-------------------------[PRINT FILE]--------------------------------	
+
 	FILE *file = fopen(argv[1],"r");
 	if (file == NULL) {
 		printf("error opening file");
 	return 1;
 	}
 	AVL* rootAVL = NULL;
-		switch(argc){
+		switch(argc){     //switch based on the number of arguments (if argc == 3, print avl (default case)) , if argc == 4 print in reverse OR based on the sort argument, if argc == 5 , print in reverse AND based on the sort argument
 		case 3:
 				while(fgets(line, 255, file)){
 					rootAVL = insertAVL(rootAVL, line, &h);
