@@ -3,6 +3,7 @@
 	gnuplot -p <<- EOF
 		reset session
 		set contour base
+		set terminal wxt size 1000, 600
 		set border 4095 front lt black lw 1 dashtype solid
 		unset key
 		set samples 50,50
