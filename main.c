@@ -1,7 +1,7 @@
 
-#include"avltest2.c"
-#include"tritab.c"
-#include"triabr.c"
+#include"avl_sort.c"
+#include"chain_sort.c"
+#include"abr_sort.c"
 
 //--------------------------[CHECK ARGUMENTS]-----------------------------
 
